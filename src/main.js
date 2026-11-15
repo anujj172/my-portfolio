@@ -4,10 +4,11 @@ import { profile, projects } from "./data.js";
 const $ = (s) => document.querySelector(s);
 const esc = (s) =>
   String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const chips = (list) => `<div class="chips">${list.map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div>`;
 
 // Зураггүй үед SVG жижиг зураг үүсгэнэ
 function thumb(hue, text) {
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='420' height='200'><rect width='420' height='200' fill='hsl(${hue},60%,38%)'/><rect x='20' y='20' width='380' height='28' fill='rgba(0,0,0,.35)'/><rect x='20' y='64' width='180' height='116' fill='rgba(255,255,255,.18)'/><rect x='214' y='64' width='186' height='50' fill='rgba(255,255,255,.28)'/><text x='214' y='156' font-family='monospace' font-size='22' fill='white'>${text}</text></svg>`;
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='420' height='200'><rect width='420' height='200' fill='hsl(${hue},60%,38%)'/><rect x='20' y='20' width='380' height='28' fill='rgba(0,0,0,.35)'/><rect x='20' y='64' width='180' height='116' fill='rgba(255,255,255,.18)'/><rect x='214' y='64' width='186' height='50' fill='rgba(255,255,255,.28)'/><text x='214' y='156' font-family='monospace' font-size='20' fill='white'>${text}</text></svg>`;
   return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
 }
 
@@ -16,14 +17,29 @@ const apps = {
   about: {
     icon: "📄", label: "Миний тухай", w: 360,
     render: () =>
-      `<h3>${esc(profile.name)}</h3><p class="muted">${esc(profile.role)}</p><p>${esc(profile.bio)}</p><p class="muted">Зөвлөгөө: цонхыг гарчиг дээрээс нь чирж болно.</p>`,
+      `<h3>${esc(profile.name)}</h3>
+       <p class="muted">${esc(profile.role)}</p>
+       <p>${esc(profile.bio)}</p>
+       <h4>Хувь хүний ур чадвар</h4>${chips(profile.personal)}
+       <h4>Хэл</h4>
+       ${profile.languages.map(([l, lv]) => `<p><b>${esc(l)}</b> · ${esc(lv)}</p>`).join("")}`,
   },
   skills: {
     icon: "🛠️", label: "Ур чадвар", w: 340,
     render: () =>
-      `<h3>Ур чадвар</h3>` +
-      profile.skills
-        .map(([n, v]) => `<div class="bar"><span>${esc(n)}</span><i><b style="width:${v}%"></b></i><span>${v}%</span></div>`)
+      `<h3>Мэргэжлийн ур чадвар</h3>` +
+      profile.skillGroups.map(([title, list]) => `<h4>${esc(title)}</h4>${chips(list)}`).join(""),
+  },
+  experience: {
+    icon: "💼", label: "Туршлага", w: 360,
+    render: () =>
+      `<h3>Ажлын туршлага</h3>` +
+      profile.experience
+        .map((e) => `<div class="tl"><b>${esc(e.title)}</b><div class="when">${esc(e.org)} · ${esc(e.when)}</div><ul>${e.points.map((p) => `<li>${esc(p)}</li>`).join("")}</ul></div>`)
+        .join("") +
+      `<h3>Боловсрол</h3>` +
+      profile.education
+        .map((e) => `<div class="tl"><b>${esc(e.school)}</b><div class="when">${esc(e.when)}</div>${esc(e.degree)}</div>`)
         .join(""),
   },
   projects: {
@@ -57,7 +73,7 @@ const apps = {
       `<h3>Хогийн сав</h3><p class="muted">Дотор нь: 404 алдаа, хуучин console.log, нэргүй хувьсагчууд.</p><button class="btn" data-egg>Хоосолох</button>`,
   },
 };
-const desktopApps = ["about", "skills", "projects", "contact", "trash"];
+const desktopApps = ["about", "skills", "experience", "projects", "contact", "trash"];
 
 // "proj-0" гэх мэт ID-аар бүтээлийн цонхны мэдээллийг үүсгэнэ
 function getDef(id) {
@@ -67,7 +83,11 @@ function getDef(id) {
     return {
       icon: "🗂️", label: p.title, w: 420,
       render: () =>
-        `<div class="card"><img alt="${esc(p.title)}" src="${thumb(p.hue, esc(p.title))}"><h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p><a class="btn" href="${esc(p.link)}" target="_blank" rel="noopener">Үзэх →</a></div>`,
+        `<div class="card"><img alt="${esc(p.title)}" src="${thumb(p.hue, esc(p.title))}"><h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>` +
+        (p.link
+          ? `<a class="btn" href="${esc(p.link)}" target="_blank" rel="noopener">Үзэх →</a>`
+          : `<p class="muted">Холбоос удахгүй нэмэгдэнэ.</p>`) +
+        `</div>`,
     };
   }
   return apps[id] || null;

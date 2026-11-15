@@ -145,3 +145,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .titlebar { cursor: default; }
   .titlebar .mx { display: none; }
 }
+/* ===== Нэмэлт: чип, түүхийн цэгүүд ===== */
+.content h4 { font-size: 14px; margin: 14px 0 4px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; }
+.chip { border: 1.5px solid #23282b; background: #fff; padding: 2px 8px; font-size: 13px; }
+.tl { border-left: 3px solid #0f766e; padding-left: 12px; margin: 10px 0 14px; }
+.tl b { display: block; }
+.tl .when { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+.tl ul { margin: 0 0 0 16px; padding: 0; }
