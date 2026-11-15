@@ -1,55 +1,147 @@
 * { box-sizing: border-box; margin: 0; }
 html, body { height: 100%; overflow: hidden; }
-body { font: 14px/1.5 system-ui, "Segoe UI", Roboto, sans-serif; color: #23282b; user-select: none; -webkit-user-select: none; }
+body {
+  font: 14px/1.5 system-ui, "Segoe UI", Roboto, sans-serif;
+  color: #23282b;
+  user-select: none;
+  -webkit-user-select: none;
+}
 button { font: inherit; color: inherit; cursor: pointer; }
 
-/* Ширээ ба ханын зураг */
+/* ===== Ширээ ба ханын зураг ===== */
 #desktop { position: fixed; inset: 0 0 40px 0; overflow: hidden; transition: background-color .4s; }
-.wp-teal { background-color: #1f6f78; background-image: linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px); background-size: 32px 32px; }
-.wp-sunset { background-image: linear-gradient(180deg, #f59e0b 0%, #e11d48 55%, #4c1d95 100%); }
-.wp-night { background-color: #0c1445; background-image: radial-gradient(1.5px 1.5px at 20% 30%, #fff, transparent), radial-gradient(1.5px 1.5px at 70% 20%, #fff, transparent), radial-gradient(1.5px 1.5px at 40% 70%, #fff, transparent), radial-gradient(1.5px 1.5px at 85% 60%, #fff, transparent); }
+.wp-teal {
+  background-color: #1f6f78;
+  background-image:
+    linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.wp-sunset { background-color: #b4472b; background-image: linear-gradient(180deg, #f59e0b 0%, #e11d48 55%, #4c1d95 100%); }
+.wp-night {
+  background-color: #0c1445;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20% 30%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 70% 20%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 40% 70%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 85% 60%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 10% 85%, #fff, transparent);
+}
 
-/* Дүрсүүд */
+/* ===== Дүрсүүд ===== */
 #icons { position: absolute; top: 12px; left: 12px; display: grid; grid-template-columns: 88px; gap: 6px; }
-.icon { background: none; border: 1px solid transparent; border-radius: 6px; padding: 8px 4px; color: #fff; text-align: center; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+.icon {
+  background: none; border: 1px solid transparent; border-radius: 6px; padding: 8px 4px;
+  color: #fff; text-align: center; text-shadow: 0 1px 3px rgba(0,0,0,.6);
+}
 .icon .ico { font-size: 34px; line-height: 1.2; display: block; }
 .icon .lbl { font-size: 12px; display: block; margin-top: 2px; word-break: break-word; }
-.icon:hover { background: rgba(255,255,255,.12); }
-.icon:focus-visible, .icon.sel { background: rgba(255,255,255,.22); border-color: rgba(255,255,255,.6); outline: none; }
+.icon:hover { background: rgba(255,255,255,.14); }
+.icon:focus-visible { background: rgba(255,255,255,.22); border-color: rgba(255,255,255,.6); outline: none; }
 
-/* Taskbar */
-#taskbar { position: fixed; left: 0; right: 0; bottom: 0; height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 8px; background: #23282b; color: #fff; z-index: 99999; }
-#start { height: 28px; padding: 0 12px; background: #0f766e; border: 0; font-weight: 700; }
-#start:hover { background: #14958b; }
-#tasks { flex: 1; display: flex; gap: 6px; overflow-x: auto; min-width: 0; }
-.task { height: 28px; max-width: 150px; padding: 0 10px; background: #3b4147; border: 0; border-bottom: 3px solid transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; }
-.task.active { background: #4b535b; border-bottom-color: #4ade80; }
-.task.min { opacity: .6; }
-#clock { font: 13px ui-monospace, Menlo, Consolas, monospace; padding: 0 4px; }
-/* Цонх */
-.win { position: absolute; display: flex; flex-direction: column; background: #f4f1ea; border: 2px solid #23282b; box-shadow: 5px 5px 0 rgba(0,0,0,.35); min-width: 260px; max-width: calc(100% - 8px); max-height: calc(100% - 8px); animation: pop .15s ease-out; }
+/* ===== Цонх ===== */
+.win {
+  position: absolute; display: flex; flex-direction: column;
+  background: #f4f1ea; border: 2px solid #23282b; box-shadow: 5px 5px 0 rgba(0,0,0,.35);
+  min-width: 260px; max-width: calc(100% - 8px); max-height: calc(100% - 8px);
+  animation: pop .15s ease-out;
+}
 @keyframes pop { from { transform: scale(.92); opacity: 0; } to { transform: none; opacity: 1; } }
 .win.hidden { display: none; }
-.win.max { left: 0 !important; top: 0 !important; width: 100% !important; height: 100% !important; max-width: none; max-height: none; box-shadow: none; }
-.titlebar { display: flex; align-items: center; gap: 6px; padding: 5px 6px 5px 10px; background: #6b7280; color: #fff; font: 700 13px/1 ui-monospace, Menlo, Consolas, monospace; cursor: grab; touch-action: none; }
+.win.max {
+  left: 0 !important; top: 0 !important; width: 100% !important; height: 100% !important;
+  max-width: none; max-height: none; box-shadow: none;
+}
+.titlebar {
+  display: flex; align-items: center; gap: 6px; padding: 5px 6px 5px 10px;
+  background: #6b7280; color: #fff;
+  font: 700 13px/1 ui-monospace, Menlo, Consolas, monospace;
+  cursor: grab; touch-action: none;
+}
 .win.active .titlebar { background: #0f766e; }
 .titlebar .t { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.titlebar button { width: 24px; height: 22px; border: 1px solid rgba(255,255,255,.55); background: rgba(255,255,255,.12); border-radius: 3px; line-height: 1; padding: 0; }
+.titlebar button {
+  width: 24px; height: 22px; border: 1px solid rgba(255,255,255,.55);
+  background: rgba(255,255,255,.12); border-radius: 3px; line-height: 1; padding: 0;
+}
 .titlebar button:hover { background: rgba(255,255,255,.3); }
 .titlebar button.x:hover { background: #dc2626; }
-.content { padding: 14px; overflow: auto; user-select: text; -webkit-user-select: text; }
-.content h3 { font-size: 16px; margin-bottom: 6px; }
+.content { padding: 16px; overflow: auto; user-select: text; -webkit-user-select: text; flex: 1; }
+.content h3 { font-size: 18px; margin-bottom: 6px; }
 .content p { margin-bottom: 8px; }
 .muted { color: #6b7280; }
-.bar { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: 13px; }
+
+.bar { display: flex; align-items: center; gap: 8px; margin: 8px 0; font-size: 13px; }
 .bar span:first-child { width: 86px; }
 .bar i { flex: 1; height: 10px; border: 1.5px solid #23282b; background: #fff; display: block; }
 .bar i b { display: block; height: 100%; background: #0f766e; }
-.folder { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
+
+.folder { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
 .folder .icon { color: #23282b; text-shadow: none; }
 .folder .icon:hover { background: rgba(15,118,110,.12); }
+
 .card img { display: block; width: 100%; height: auto; border: 1.5px solid #23282b; margin-bottom: 10px; }
-.content .btn { display: inline-block; padding: 6px 12px; background: #23282b; color: #fff; text-decoration: none; border: 0; margin: 4px 6px 0 0; }
+.content .btn {
+  display: inline-block; padding: 6px 12px; background: #23282b; color: #fff;
+  text-decoration: none; border: 0; margin: 4px 6px 0 0;
+}
 .content .btn:hover { background: #0f766e; }
 .wp-pick { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 .wp-pick button { width: 80px; height: 54px; border: 2px solid #23282b; }
+
+/* ===== Taskbar ===== */
+#taskbar {
+  position: fixed; left: 0; right: 0; bottom: 0; height: 40px;
+  display: flex; align-items: center; gap: 8px; padding: 0 8px;
+  background: #23282b; color: #fff; z-index: 99999;
+}
+#start { height: 28px; padding: 0 12px; background: #0f766e; border: 0; font-weight: 700; }
+#start:hover { background: #14958b; }
+#tasks { flex: 1; display: flex; gap: 6px; overflow-x: auto; min-width: 0; }
+.task {
+  height: 28px; max-width: 150px; padding: 0 10px; background: #3b4147; border: 0;
+  border-bottom: 3px solid transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px;
+}
+.task.active { background: #4b535b; border-bottom-color: #4ade80; }
+.task.min { opacity: .6; }
+#clock { font: 13px ui-monospace, Menlo, Consolas, monospace; padding: 0 4px; }
+
+/* ===== Start цэс ===== */
+#startmenu {
+  position: fixed; left: 8px; bottom: 44px; width: 220px;
+  background: #f4f1ea; border: 2px solid #23282b; box-shadow: 5px 5px 0 rgba(0,0,0,.35);
+  z-index: 99998; padding: 6px;
+}
+#startmenu[hidden], #bsod[hidden] { display: none; }
+#startmenu button {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 8px 10px; background: none; border: 0; text-align: left;
+}
+#startmenu button:hover { background: #0f766e; color: #fff; }
+
+/* ===== Эхлэх анимэйшн ба нууц дэлгэц ===== */
+#boot {
+  position: fixed; inset: 0; background: #0b110d; color: #4ade80; z-index: 200000;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+  font: 700 22px ui-monospace, Menlo, Consolas, monospace; transition: opacity .5s;
+}
+#boot.off { opacity: 0; pointer-events: none; }
+#boot .track { width: 220px; height: 10px; border: 2px solid #4ade80; }
+#boot .fill { height: 100%; width: 0; background: #4ade80; animation: load 1s linear forwards; }
+@keyframes load { to { width: 100%; } }
+#bsod {
+  position: fixed; inset: 0; background: #1d4ed8; color: #fff; z-index: 300000; padding: 8vw;
+  font: 16px/1.7 ui-monospace, Menlo, Consolas, monospace; cursor: pointer;
+}
+#bsod .face { font-size: 80px; line-height: 1; }
+
+/* ===== Утас ===== */
+@media (max-width: 700px) {
+  #icons { right: 12px; grid-template-columns: repeat(4, 1fr); }
+  .win {
+    left: 4px !important; top: 4px !important;
+    width: calc(100% - 8px) !important; height: calc(100% - 8px) !important; max-width: none;
+  }
+  .titlebar { cursor: default; }
+  .titlebar .mx { display: none; }
+}

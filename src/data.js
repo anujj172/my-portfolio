@@ -1,11 +1,16 @@
 export const profile = {
-  name: "Анужин",
+  name: "Бат-Эрдэнэ",
   role: "Вэб хөгжүүлэгч (суралцагч)",
   bio: "МСМ-ийн 3-р курсийн оюутан. Энгийн зүйлийг сонирхолтой болгох дуртай.",
-  skills: [["HTML/CSS", 85], ["JavaScript", 75], ["Git", 70], ["React", 50]],
+  skills: [
+    ["HTML/CSS", 85],
+    ["JavaScript", 75],
+    ["Git", 70],
+    ["React", 50],
+  ],
   contacts: {
     email: "you@example.com",
-    github: "https://github.com/username",
+    github: "https://github.com/anujj172",
     linkedin: "https://linkedin.com/in/username",
   },
 };
