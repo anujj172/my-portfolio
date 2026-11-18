@@ -32,7 +32,7 @@ export const profile = {
     { school: "Санхүү эдийн засгийн их сургууль", degree: "Мэдээллийн системийн менежментийн бакалавр", when: "2023 – 2027 (хүлээгдэж буй)" },
     { school: "48-р сургууль", degree: "Бүрэн дунд боловсрол", when: "2011 – 2023" },
   ],
-  // type нь main.js дахь дүрстэй таарна: phone, email, github
+  // type нь main.js дахь contactIcons-той таарна: phone, email, github
   contacts: [
     { type: "phone", label: "Утас", value: "+976 86886700", href: "tel:+97686886700" },
     { type: "email", label: "Имэйл", value: "anujinnerdenebaatar@gmail.com", href: "mailto:anujinnerdenebaatar@gmail.com" },
@@ -40,25 +40,34 @@ export const profile = {
   ],
 };
 
-// link байхгүй бол "Холбоос удахгүй нэмэгдэнэ" гэж харагдана.
-// Өөрийн жинхэнэ төслөөр солиорой (Power BI, Figma, SQL гэх мэт).
+// images: public/images/ доторх зургийн замууд. Хоосон бол өнгөт бүдүүвч харагдана.
+// links: [{ label, href }]. Хоосон бол "Холбоос удахгүй нэмэгдэнэ" гэж харагдана.
 export const projects = [
   {
-    title: "MyOS портфолио",
-    desc: "Энэ сайт. Цонх чирдэг, start цэстэй, үйлдлийн систем загварын портфолио. HTML, CSS, JavaScript, Vite.",
-    link: "https://github.com/anujj172/my-portfolio",
-    hue: 170,
+    title: "Bouquet Studio",
+    desc: "Цэцгийн дэлгүүрийн онлайн захиалгын систем. Хэрэглэгч цэцгээ өөрөө сонгож, баглаагаа 2D болон 3D-ээр урьдчилж харж, боодол, туузны өнгийг сонгоод захиална. Сагс, захиалга, профайл, нэвтрэлт бүгд ажилладаг.",
+    tech: ["React", "Vite", "Tailwind CSS", "Supabase", "PostgreSQL", "React Router"],
+    links: [
+      { label: "GitHub", href: "https://github.com/anujj172/Bouquet-studio" },
+      { label: "Figma", href: "https://www.figma.com/design/HBcqIymfWWKdVDFkBLgm7u/Flowershop?node-id=0-1" },
+    ],
+    images: [], // жишээ: ["/images/bouquet-1.png", "/images/bouquet-2.png"]
+    hue: 340,
   },
   {
-    title: "ERP санхүүгийн тайлан",
-    desc: "Mongol ID LLC дээр ERP системд санхүүгийн өгөгдлийг удирдаж, тайлан бэлтгэсэн ажил.",
-    link: "",
-    hue: 35,
-  },
-  {
-    title: "Бизнес процессын шинжилгээ",
-    desc: "Системийн шинжилгээ, бизнес процессыг сайжруулах төсөлд оролцсон туршлага.",
-    link: "",
+    title: "Mobile апп (React)",
+    desc: "React дээр хийсэн гар утасны апп. (Тайлбараа энд бичнэ.)",
+    tech: ["React"],
+    links: [],
+    images: [], // жишээ: ["/images/app-1.png", "/images/app-2.png"]
     hue: 220,
+  },
+  {
+    title: "MyOS портфолио",
+    desc: "Энэ сайт. Цонх чирдэг, start цэстэй, ажилладаг хогийн савтай үйлдлийн систем загварын портфолио.",
+    tech: ["JavaScript", "Vite", "CSS"],
+    links: [{ label: "GitHub", href: "https://github.com/anujj172/my-portfolio" }],
+    images: [],
+    hue: 170,
   },
 ];

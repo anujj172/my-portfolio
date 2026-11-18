@@ -101,13 +101,21 @@ function getDef(id) {
   if (id.startsWith("proj-")) {
     const p = projects[+id.slice(5)];
     if (!p) return null;
+    const shots = p.images && p.images.length ? p.images : [];
+    const gallery = shots.length
+      ? `<div class="shots${shots.length === 1 ? " one" : ""}">${shots
+          .map((s) => `<img alt="${esc(p.title)}" src="${esc(s)}">`)
+          .join("")}</div>`
+      : `<img alt="${esc(p.title)}" src="${thumb(p.hue, esc(p.title))}">`;
+    const links = (p.links || [])
+      .map((l) => `<a class="btn" href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)} →</a>`)
+      .join("");
     return {
-      icon: "🗂️", label: p.title, w: 420,
+      icon: "🗂️", label: p.title, w: 460,
       render: () =>
-        `<div class="card"><img alt="${esc(p.title)}" src="${thumb(p.hue, esc(p.title))}"><h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>` +
-        (p.link
-          ? `<a class="btn" href="${esc(p.link)}" target="_blank" rel="noopener">Үзэх →</a>`
-          : `<p class="muted">Холбоос удахгүй нэмэгдэнэ.</p>`) +
+        `<div class="card">${gallery}<h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>` +
+        (p.tech && p.tech.length ? chips(p.tech) : "") +
+        (links || `<p class="muted">Холбоос удахгүй нэмэгдэнэ.</p>`) +
         `</div>`,
     };
   }
@@ -294,5 +302,5 @@ setInterval(tick, 20000);
 
 setTimeout(() => {
   $("#boot").classList.add("off");
-  setTimeout(() => $("#boot").remove(), 600);
+  setTimeout(() => $("#boot").remove(), 600); 
 }, 1200);
