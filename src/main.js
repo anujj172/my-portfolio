@@ -6,11 +6,22 @@ const esc = (s) =>
   String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const chips = (list) => `<div class="chips">${list.map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div>`;
 
+// Холбоо барих төрөл бүрийн дүрс
+const contactIcons = { phone: "📞", email: "✉️", github: "🐙" };
+
 // Зураггүй үед SVG жижиг зураг үүсгэнэ
 function thumb(hue, text) {
   const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='420' height='200'><rect width='420' height='200' fill='hsl(${hue},60%,38%)'/><rect x='20' y='20' width='380' height='28' fill='rgba(0,0,0,.35)'/><rect x='20' y='64' width='180' height='116' fill='rgba(255,255,255,.18)'/><rect x='214' y='64' width='186' height='50' fill='rgba(255,255,255,.28)'/><text x='214' y='156' font-family='monospace' font-size='20' fill='white'>${text}</text></svg>`;
   return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
 }
+
+// Хогийн савны төлөв
+const trashItems = [
+  { icon: "📄", name: "bug404.log", note: "404: сэтгэл санаа олдсонгүй" },
+  { icon: "📝", name: "хуучин_cv_v7_final_final.docx", note: "v8 удахгүй гарна" },
+  { icon: "🧩", name: "console.log(1).js", note: "Нэргүй хувьсагчууд" },
+];
+let trashMsg = "";
 
 // ===== 1. АППУУД: дүрс, нэр, өргөн, агуулга зурах функц =====
 const apps = {
@@ -20,9 +31,11 @@ const apps = {
       `<h3>${esc(profile.name)}</h3>
        <p class="muted">${esc(profile.role)}</p>
        <p>${esc(profile.bio)}</p>
-       <h4>Хувь хүний ур чадвар</h4>${chips(profile.personal)}
-       <h4>Хэл</h4>
-       ${profile.languages.map(([l, lv]) => `<p><b>${esc(l)}</b> · ${esc(lv)}</p>`).join("")}`,
+       <h4>Боловсрол</h4>
+       ${profile.education
+         .map((e) => `<div class="tl"><b>${esc(e.school)}</b><div class="when">${esc(e.when)}</div>${esc(e.degree)}</div>`)
+         .join("")}
+       <h4>Хувь хүний ур чадвар</h4>${chips(profile.personal)}`,
   },
   skills: {
     icon: "🛠️", label: "Ур чадвар", w: 340,
@@ -36,10 +49,6 @@ const apps = {
       `<h3>Ажлын туршлага</h3>` +
       profile.experience
         .map((e) => `<div class="tl"><b>${esc(e.title)}</b><div class="when">${esc(e.org)} · ${esc(e.when)}</div><ul>${e.points.map((p) => `<li>${esc(p)}</li>`).join("")}</ul></div>`)
-        .join("") +
-      `<h3>Боловсрол</h3>` +
-      profile.education
-        .map((e) => `<div class="tl"><b>${esc(e.school)}</b><div class="when">${esc(e.when)}</div>${esc(e.degree)}</div>`)
         .join(""),
   },
   projects: {
@@ -55,8 +64,14 @@ const apps = {
     icon: "✉️", label: "Холбоо барих", w: 340,
     render: () =>
       `<h3>Холбоо барих</h3>` +
-      Object.entries(profile.contacts)
-        .map(([k, v]) => `<p><b>${esc(k)}</b><br><a href="${k === "email" ? "mailto:" : ""}${esc(v)}" target="_blank" rel="noopener">${esc(v)}</a></p>`)
+      profile.contacts
+        .map((c) => {
+          const external = c.href.startsWith("http") ? ` target="_blank" rel="noopener"` : "";
+          return `<a class="contact-row" href="${esc(c.href)}"${external}>
+            <span class="contact-ico ${esc(c.type)}">${contactIcons[c.type] || "🔗"}</span>
+            <span><small>${esc(c.label)}</small><b>${esc(c.value)}</b></span>
+          </a>`;
+        })
         .join(""),
   },
   settings: {
@@ -70,7 +85,13 @@ const apps = {
   trash: {
     icon: "🗑️", label: "Хогийн сав", w: 320,
     render: () =>
-      `<h3>Хогийн сав</h3><p class="muted">Дотор нь: 404 алдаа, хуучин console.log, нэргүй хувьсагчууд.</p><button class="btn" data-egg>Хоосолох</button>`,
+      `<h3>Хогийн сав</h3>` +
+      (trashMsg ? `<p class="trash-msg">${esc(trashMsg)}</p>` : "") +
+      (trashItems.length
+        ? `<ul class="trash-list">${trashItems
+            .map((t, i) => `<li><span>${t.icon} <b>${esc(t.name)}</b><small>${esc(t.note)}</small></span><button class="btn mini" data-restore="${i}">Сэргээх</button></li>`)
+            .join("")}</ul><button class="btn" data-egg>Хоосолох</button>`
+        : `<p class="muted">Хогийн сав хоосон байна ✨</p>`),
   },
 };
 const desktopApps = ["about", "skills", "experience", "projects", "contact", "trash"];
@@ -128,6 +149,11 @@ function closeWin(id) {
   wins[id].el.remove();
   wins[id].btn.remove();
   delete wins[id];
+}
+
+// Хогийн савны цонх нээлттэй бол агуулгыг дахин зурна
+function refreshTrash() {
+  if (wins.trash) wins.trash.el.querySelector(".content").innerHTML = apps.trash.render();
 }
 
 function openApp(id) {
@@ -207,7 +233,7 @@ function openApp(id) {
   focusWin(id);
 }
 
-// ===== 3. START ЦЭС, ХАНЫН ЗУРАГ, НУУЦ ТОВЧ =====
+// ===== 3. START ЦЭС, ХАНЫН ЗУРАГ, ХОГИЙН САВ =====
 const menu = $("#startmenu");
 menu.innerHTML = Object.keys(apps)
   .map((id) => `<button data-open="${id}">${apps[id].icon} ${esc(apps[id].label)}</button>`)
@@ -236,7 +262,22 @@ document.addEventListener("click", (e) => {
   }
   const wp = e.target.closest("[data-wp]");
   if (wp) { setWp(wp.dataset.wp); return; }
-  if (e.target.closest("[data-egg]")) { $("#bsod").hidden = false; return; }
+
+  const rs = e.target.closest("[data-restore]");
+  if (rs) {
+    const [item] = trashItems.splice(+rs.dataset.restore, 1);  // жагсаалтаас хасна
+    trashMsg = `«${item.name}» сэргээгдлээ. Гэхдээ хэнд ч хэрэггүй байсан 😄`;
+    refreshTrash();
+    return;
+  }
+  if (e.target.closest("[data-egg]")) {
+    trashItems.length = 0;
+    trashMsg = "Хог цэвэрлэгдлээ.";
+    refreshTrash();
+    $("#bsod").hidden = false;   // нууц цэнхэр дэлгэц
+    return;
+  }
+
   if (!e.target.closest("#startmenu")) menu.hidden = true;
 });
 $("#bsod").onclick = () => { $("#bsod").hidden = true; };
@@ -254,5 +295,4 @@ setInterval(tick, 20000);
 setTimeout(() => {
   $("#boot").classList.add("off");
   setTimeout(() => $("#boot").remove(), 600);
-  openApp("about");
 }, 1200);

@@ -11,7 +11,6 @@ export const profile = {
     "Багаар ажиллах", "Харилцаа", "Асуудал шийдэх", "Шийдвэр гаргах", "Цаг төлөвлөлт",
     "Шинэ мэдлэг сурах", "Санаачлага", "Бүтээлч байдал", "Дарамтад ажиллах", "Манлайлал",
   ],
-  languages: [["Монгол", "Төрөлх"], ["English", "A2+ (Elementary)"]],
   experience: [
     {
       title: "Systems Analyst",
@@ -33,10 +32,12 @@ export const profile = {
     { school: "Санхүү эдийн засгийн их сургууль", degree: "Мэдээллийн системийн менежментийн бакалавр", when: "2023 – 2027 (хүлээгдэж буй)" },
     { school: "48-р сургууль", degree: "Бүрэн дунд боловсрол", when: "2011 – 2023" },
   ],
-  contacts: {
-    email: "anujinnerdenebaatar@gmail.com",
-    github: "https://github.com/anujj172",
-  },
+  // type нь main.js дахь дүрстэй таарна: phone, email, github
+  contacts: [
+    { type: "phone", label: "Утас", value: "+976 86886700", href: "tel:+97686886700" },
+    { type: "email", label: "Имэйл", value: "anujinnerdenebaatar@gmail.com", href: "mailto:anujinnerdenebaatar@gmail.com" },
+    { type: "github", label: "GitHub", value: "github.com/anujj172", href: "https://github.com/anujj172" },
+  ],
 };
 
 // link байхгүй бол "Холбоос удахгүй нэмэгдэнэ" гэж харагдана.
