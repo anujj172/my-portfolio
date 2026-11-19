@@ -108,7 +108,7 @@ function getDef(id) {
           .join("")}</div>`
       : `<img alt="${esc(p.title)}" src="${thumb(p.hue, esc(p.title))}">`;
     const links = (p.links || [])
-      .map((l) => `<a class="btn" href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)} →</a>`)
+      .map((l) => `<a class="btn" href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)}</a>`)
       .join("");
     return {
       icon: "🗂️", label: p.title, w: 460,

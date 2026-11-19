@@ -3,7 +3,7 @@ export const profile = {
   role: "Мэдээллийн системийн менежментийн оюутан",
   bio: "Мэдээллийн системийн менежментийн чиглэлээр суралцдаг. Системийн шинжилгээ, бизнес процессыг сайжруулах төсөл дээр ажилласан бөгөөд SQL, ERP систем, өгөгдлийн шинжилгээгээр туршлагатай.",
   skillGroups: [
-    ["Өгөгдөл ба систем", ["SQL", "MySQL", "PostgreSQL", "Excel", "Power BI", "ERP систем", "Системийн шинжилгээ", "Бизнес процессын оновчлол"]],
+    ["Өгөгдөл ба систем", ["SQL", "MySQL", "PostgreSQL", "Excel", "Power BI", "ERP систем", "Системийн шинжилгээ", "Бизнес процессын шинжилгээ"]],
     ["Хөгжүүлэлт ба дизайн", ["C#", "JavaScript", "React", "Figma"]],
     ["Менежмент", ["Agile", "Word", "Excel", "Outlook"]],
   ],
@@ -40,8 +40,6 @@ export const profile = {
   ],
 };
 
-// images: public/images/ доторх зургийн замууд. Хоосон бол өнгөт бүдүүвч харагдана.
-// links: [{ label, href }]. Хоосон бол "Холбоос удахгүй нэмэгдэнэ" гэж харагдана.
 export const projects = [
   {
     title: "Bouquet Studio",
@@ -51,15 +49,17 @@ export const projects = [
       { label: "GitHub", href: "https://github.com/anujj172/Bouquet-studio" },
       { label: "Figma", href: "https://www.figma.com/design/HBcqIymfWWKdVDFkBLgm7u/Flowershop?node-id=0-1" },
     ],
-    images: [], // жишээ: ["/images/bouquet-1.png", "/images/bouquet-2.png"]
+    images: ["/images/bouquet-studio.png" , "/images/bouquet-studio 3.png", "/images/bouquet-studio 2.png"], 
     hue: 340,
   },
   {
-    title: "Mobile апп (React)",
-    desc: "React дээр хийсэн гар утасны апп. (Тайлбараа энд бичнэ.)",
-    tech: ["React"],
-    links: [],
-    images: [], // жишээ: ["/images/app-1.png", "/images/app-2.png"]
+    title: "Санхүүгийн апп",
+    desc: "React дээр хийсэн гар утасны апп. Хэрэглэгчийн өдөр тутмын орлого, зарлагыг бүртгэж, үргүй зардлыг хянах замаар хуримтлал үүсгэх дадлыг төлөвшүүлэх санхүүгийн апп. Хэзээ ч, хаанаас ч хурдан, ойлгомжтой хөтлөх боломжийг олгож, иргэдийн санхүүгийн боловсролыг дэмжинэ.",
+    tech: ["React","Tailwind CSS", "Supabase"],
+    links: [
+      { label: "GitHub", href: "https://github.com/anujj172/finance-project" },
+    ],
+    images: ["/images/finance 1.png", "/images/finance 2.png"], 
     hue: 220,
   },
   {
@@ -67,7 +67,7 @@ export const projects = [
     desc: "Энэ сайт. Цонх чирдэг, start цэстэй, ажилладаг хогийн савтай үйлдлийн систем загварын портфолио.",
     tech: ["JavaScript", "Vite", "CSS"],
     links: [{ label: "GitHub", href: "https://github.com/anujj172/my-portfolio" }],
-    images: [],
+    images: ["/images/portfolio-1.png", "/images/portfolio-2.png"],
     hue: 170,
   },
 ];
