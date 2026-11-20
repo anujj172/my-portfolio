@@ -1,306 +1,228 @@
 import "./style.css";
 import { profile, projects } from "./data.js";
 
-const $ = (s) => document.querySelector(s);
-const esc = (s) =>
-  String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const chips = (list) => `<div class="chips">${list.map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div>`;
+// ===== Тохиргоо =====
+const PIN = "0000";      
+const MAX_TRIES = 3;
 
-// Холбоо барих төрөл бүрийн дүрс
-const contactIcons = { phone: "📞", email: "✉️", github: "🐙" };
+// ===== Элементүүд =====
+const screen = document.querySelector("#screen");
+const cardBtn = document.querySelector("#card");
+const receipt = document.querySelector("#receipt");
 
-// Зураггүй үед SVG жижиг зураг үүсгэнэ
-function thumb(hue, text) {
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='420' height='200'><rect width='420' height='200' fill='hsl(${hue},60%,38%)'/><rect x='20' y='20' width='380' height='28' fill='rgba(0,0,0,.35)'/><rect x='20' y='64' width='180' height='116' fill='rgba(255,255,255,.18)'/><rect x='214' y='64' width='186' height='50' fill='rgba(255,255,255,.28)'/><text x='214' y='156' font-family='monospace' font-size='20' fill='white'>${text}</text></svg>`;
-  return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
-}
+// ===== Төлөв =====
+let state = "card";      
+let pin = "";
+let tries = 0;
+let msg = "";
 
-// Хогийн савны төлөв
-const trashItems = [
-  { icon: "📄", name: "bug404.log", note: "404: сэтгэл санаа олдсонгүй" },
-  { icon: "📝", name: "хуучин_cv_v7_final_final.docx", note: "v8 удахгүй гарна" },
-  { icon: "🧩", name: "console.log(1).js", note: "Нэргүй хувьсагчууд" },
+// ===== Цэс: 8 хажуугийн товч = 8 хэсэг =====
+const MENU = [
+  { slot: "L1", t: "Танилцуулга", s: "миний тухай", go: "about" },
+  { slot: "L2", t: "Үлдэгдэл", s: "ур чадвар", go: "skills" },
+  { slot: "L3", t: "Түүх", s: "туршлага", go: "history" },
+  { slot: "L4", t: "Баримт", s: "CV хэвлэх", go: "receipt" },
+  { slot: "R1", t: "Картууд", s: "төслүүд", go: "projects" },
+  { slot: "R2", t: "Шилжүүлэг", s: "холбоо барих", go: "contact" },
+  { slot: "R3", t: "Сайтын тухай", s: "санаа, технологи", go: "site" },
+  { slot: "R4", t: "Гарах", s: "карт авах", go: "eject" },
 ];
-let trashMsg = "";
 
-// ===== 1. АППУУД: дүрс, нэр, өргөн, агуулга зурах функц =====
-const apps = {
-  about: {
-    icon: "📄", label: "Миний тухай", w: 360,
-    render: () =>
-      `<h3>${esc(profile.name)}</h3>
-       <p class="muted">${esc(profile.role)}</p>
-       <p>${esc(profile.bio)}</p>
-       <h4>Боловсрол</h4>
-       ${profile.education
-         .map((e) => `<div class="tl"><b>${esc(e.school)}</b><div class="when">${esc(e.when)}</div>${esc(e.degree)}</div>`)
-         .join("")}
-       <h4>Хувь хүний ур чадвар</h4>${chips(profile.personal)}`,
-  },
-  skills: {
-    icon: "🛠️", label: "Ур чадвар", w: 340,
-    render: () =>
-      `<h3>Мэргэжлийн ур чадвар</h3>` +
-      profile.skillGroups.map(([title, list]) => `<h4>${esc(title)}</h4>${chips(list)}`).join(""),
-  },
-  experience: {
-    icon: "💼", label: "Туршлага", w: 360,
-    render: () =>
-      `<h3>Ажлын туршлага</h3>` +
-      profile.experience
-        .map((e) => `<div class="tl"><b>${esc(e.title)}</b><div class="when">${esc(e.org)} · ${esc(e.when)}</div><ul>${e.points.map((p) => `<li>${esc(p)}</li>`).join("")}</ul></div>`)
-        .join(""),
-  },
-  projects: {
-    icon: "📁", label: "Бүтээлүүд", w: 440,
-    render: () =>
-      `<h3>Бүтээлүүд</h3><p class="muted">Хавтас бүрийг нээнэ үү.</p><div class="folder">` +
-      projects
-        .map((p, i) => `<button class="icon" data-open="proj-${i}"><span class="ico">🗂️</span><span class="lbl">${esc(p.title)}</span></button>`)
-        .join("") +
-      `</div>`,
-  },
-  contact: {
-    icon: "✉️", label: "Холбоо барих", w: 340,
-    render: () =>
-      `<h3>Холбоо барих</h3>` +
-      profile.contacts
-        .map((c) => {
-          const external = c.href.startsWith("http") ? ` target="_blank" rel="noopener"` : "";
-          return `<a class="contact-row" href="${esc(c.href)}"${external}>
-            <span class="contact-ico ${esc(c.type)}">${contactIcons[c.type] || "🔗"}</span>
-            <span><small>${esc(c.label)}</small><b>${esc(c.value)}</b></span>
-          </a>`;
-        })
-        .join(""),
-  },
-  settings: {
-    icon: "⚙️", label: "Тохиргоо", w: 320,
-    render: () =>
-      `<h3>Ханын зураг</h3><div class="wp-pick">
-        <button class="wp-teal" data-wp="wp-teal" aria-label="Цэнхэр ногоон"></button>
-        <button class="wp-sunset" data-wp="wp-sunset" aria-label="Нар жаргах"></button>
-        <button class="wp-night" data-wp="wp-night" aria-label="Шөнө"></button></div>`,
-  },
-  trash: {
-    icon: "🗑️", label: "Хогийн сав", w: 320,
-    render: () =>
-      `<h3>Хогийн сав</h3>` +
-      (trashMsg ? `<p class="trash-msg">${esc(trashMsg)}</p>` : "") +
-      (trashItems.length
-        ? `<ul class="trash-list">${trashItems
-            .map((t, i) => `<li><span>${t.icon} <b>${esc(t.name)}</b><small>${esc(t.note)}</small></span><button class="btn mini" data-restore="${i}">Сэргээх</button></li>`)
-            .join("")}</ul><button class="btn" data-egg>Хоосолох</button>`
-        : `<p class="muted">Хогийн сав хоосон байна ✨</p>`),
-  },
-};
-const desktopApps = ["about", "skills", "experience", "projects", "contact", "trash"];
+const ICONS = { phone: "📞", email: "✉️", github: "🐙" };
 
-// "proj-0" гэх мэт ID-аар бүтээлийн цонхны мэдээллийг үүсгэнэ
-function getDef(id) {
-  if (id.startsWith("proj-")) {
-    const p = projects[+id.slice(5)];
-    if (!p) return null;
-    const shots = p.images && p.images.length ? p.images : [];
-    const gallery = shots.length
-      ? `<div class="shots${shots.length === 1 ? " one" : ""}">${shots
-          .map((s) => `<img alt="${esc(p.title)}" src="${esc(s)}">`)
-          .join("")}</div>`
-      : `<img alt="${esc(p.title)}" src="${thumb(p.hue, esc(p.title))}">`;
-    const links = (p.links || [])
-      .map((l) => `<a class="btn" href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)}</a>`)
-      .join("");
-    return {
-      icon: "🗂️", label: p.title, w: 460,
-      render: () =>
-        `<div class="card">${gallery}<h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>` +
-        (p.tech && p.tech.length ? chips(p.tech) : "") +
-        (links || `<p class="muted">Холбоос удахгүй нэмэгдэнэ.</p>`) +
-        `</div>`,
-    };
-  }
-  return apps[id] || null;
+// ===== Дэлгэц зурах =====
+function show(html) {
+  screen.innerHTML = `<div class="view">${html}</div>`;
 }
 
-// Ширээн дээр дүрсүүдийг зурна
-$("#icons").innerHTML = desktopApps
-  .map((id) => `<button class="icon" data-open="${id}"><span class="ico">${apps[id].icon}</span><span class="lbl">${esc(apps[id].label)}</span></button>`)
-  .join("");
-
-// ===== 2. ЦОНХНЫ СИСТЕМ =====
-const desktop = $("#desktop");
-const layer = $("#windows");
-const tasks = $("#tasks");
-const wins = {};            // нээлттэй цонхнууд: { id: { el, btn, min } }
-let zTop = 10, spawn = 0;   // zTop: хамгийн дээд z-index, spawn: цонхыг зөрүүлэх тоолуур
-const isMobile = () => matchMedia("(max-width: 700px)").matches;
-
-function focusWin(id) {
-  Object.entries(wins).forEach(([k, w]) => {
-    const on = k === id;
-    w.el.classList.toggle("active", on);
-    w.btn.classList.toggle("active", on && !w.min);
-  });
-  if (wins[id]) wins[id].el.style.zIndex = ++zTop; // хамгийн дээр гаргана
+function renderCard() {
+  show(`<div class="center">
+    <p class="small">ATM · ПОРТФОЛИО</p>
+    <h1>${profile.name}</h1>
+    <p class="role">${profile.role}</p>
+    <p class="blink">▼ КАРТАА ОРУУЛНА УУ ▼</p>
+  </div>`);
 }
 
-function setMin(id, m) {
-  const w = wins[id];
-  w.min = m;
-  w.el.classList.toggle("hidden", m);
-  w.btn.classList.toggle("min", m);
-  if (m) w.btn.classList.remove("active");
-  else focusWin(id);
+function renderPin() {
+  const dots = [0, 1, 2, 3].map((i) => `<i class="${i < pin.length ? "on" : ""}"></i>`).join("");
+  show(`<div class="center">
+    <b>PIN КОДОО ОРУУЛНА УУ</b>
+    <div class="dots">${dots}</div>
+    <p class="err">${msg}</p>
+    <p class="small">Зочдод зориулсан PIN: ${PIN}</p>
+    <p class="small">Тийм – батлах · Засах – арилгах · Болих – карт авах</p>
+  </div>`);
 }
 
-function closeWin(id) {
-  wins[id].el.remove();
-  wins[id].btn.remove();
-  delete wins[id];
-}
-
-// Хогийн савны цонх нээлттэй бол агуулгыг дахин зурна
-function refreshTrash() {
-  if (wins.trash) wins.trash.el.querySelector(".content").innerHTML = apps.trash.render();
-}
-
-function openApp(id) {
-  // Нээлттэй байвал шинээр үүсгэхгүй, буцааж гаргаад дээр нь авчирна
-  if (wins[id]) { setMin(id, false); focusWin(id); return; }
-  const def = getDef(id);
-  if (!def) return;
-
-  const cw = desktop.clientWidth, ch = desktop.clientHeight;
-  const w = Math.min(def.w + 120, cw - 16);      // өргөн
-  const offset = (spawn % 5) * 26 - 52;          // дараагийн цонхыг бага зэрэг зөрүүлнэ
-  spawn++;
-
-  const el = document.createElement("div");
-  el.className = "win";
-  el.style.width = w + "px";
-  el.style.minHeight = "300px";
-  el.style.left = Math.max(8, (cw - w) / 2 + offset) + "px";   // голд нь
-  el.style.top = Math.max(8, (ch - 340) / 2 + offset) + "px";
-  el.innerHTML = `
-    <div class="titlebar">
-      <span class="t">${def.icon} ${esc(def.label)}</span>
-      <button class="mn" aria-label="Жижигрүүлэх">–</button>
-      <button class="mx" aria-label="Томруулах">□</button>
-      <button class="x" aria-label="Хаах">✕</button>
-    </div>
-    <div class="content">${def.render()}</div>`;
-  layer.appendChild(el);
-
-  const btn = document.createElement("button");
-  btn.className = "task";
-  btn.textContent = def.icon + " " + def.label;
-  tasks.appendChild(btn);
-
-  wins[id] = { el, btn, min: false };
-
-  // Цонхны 3 товч ба taskbar дээрх товч
-  el.addEventListener("pointerdown", () => focusWin(id));
-  el.querySelector(".mn").onclick = () => setMin(id, true);
-  el.querySelector(".mx").onclick = () => el.classList.toggle("max");
-  el.querySelector(".x").onclick = () => closeWin(id);
-  btn.onclick = () => {
-    const win = wins[id];
-    if (win.min) setMin(id, false);
-    else if (win.btn.classList.contains("active")) setMin(id, true);
-    else focusWin(id);
+function renderMenu() {
+  const cell = (m) => {
+    const side = m.slot[0] === "L" ? "l" : "r";
+    return `<button class="mi ${side} n${m.slot[1]}" data-go="${m.go}">
+      <span class="t">${m.t}</span><span class="s">${m.s}</span></button>`;
   };
-
-  // Цонх чирэх (хулгана болон хуруу хоёуланд нь ажиллана)
-  const bar = el.querySelector(".titlebar");
-  bar.addEventListener("dblclick", (e) => {
-    if (!e.target.closest("button")) el.classList.toggle("max");
-  });
-  bar.addEventListener("pointerdown", (e) => {
-    if (e.target.closest("button") || isMobile() || el.classList.contains("max")) return;
-    const r = el.getBoundingClientRect();
-    const d = desktop.getBoundingClientRect();
-    const dx = e.clientX - r.left;   // хулгана цонхны зүүн ирмэгээс хэр зайтай вэ
-    const dy = e.clientY - r.top;
-    bar.setPointerCapture(e.pointerId);
-    const move = (ev) => {
-      let x = ev.clientX - dx - d.left;
-      let y = ev.clientY - dy - d.top;
-      x = Math.max(-r.width + 90, Math.min(x, d.width - 90)); // цонхыг дэлгэцээс бүрэн гаргахгүй
-      y = Math.max(0, Math.min(y, d.height - 30));
-      el.style.left = x + "px";
-      el.style.top = y + "px";
-    };
-    const up = () => {
-      bar.removeEventListener("pointermove", move);
-      bar.removeEventListener("pointerup", up);
-    };
-    bar.addEventListener("pointermove", move);
-    bar.addEventListener("pointerup", up);
-  });
-
-  focusWin(id);
+  show(`<div class="menu">
+    <div class="mid">
+      <b>Сайн байна уу,</b>
+      <b>${profile.name.split(" ")[0]}-ын банканд</b>
+      <span class="small">Хажуугийн товч эсвэл дэлгэц дээрх бичгийг дар</span>
+    </div>
+    ${MENU.map(cell).join("")}
+  </div>`);
 }
 
-// ===== 3. START ЦЭС, ХАНЫН ЗУРАГ, ХОГИЙН САВ =====
-const menu = $("#startmenu");
-menu.innerHTML = Object.keys(apps)
-  .map((id) => `<button data-open="${id}">${apps[id].icon} ${esc(apps[id].label)}</button>`)
-  .join("");
-$("#start").onclick = (e) => {
-  e.stopPropagation();
-  menu.hidden = !menu.hidden;
+function wrap(title, body) {
+  show(`<div class="page">
+    <div class="page-head"><span>${title}</span><span class="hint">L4 Буцах · R4 Гарах</span></div>
+    <div class="page-body">${body}</div>
+    <div class="page-foot"><button data-go="menu">◂ Буцах</button><button data-go="eject">Гарах ▸</button></div>
+  </div>`);
+}
+
+const chips = (arr) => `<div class="chips">${arr.map((x) => `<span class="chip">${x}</span>`).join("")}</div>`;
+
+const PAGES = {
+  about() {
+    wrap("ТАНИЛЦУУЛГА", `
+      <h3>Миний тухай</h3><p>${profile.bio}</p>
+      <h3>Боловсрол</h3>
+      ${profile.education.map((e) => `<div class="card-item"><div class="row"><b>${e.school}</b><span>${e.when}</span></div><div>${e.degree}</div></div>`).join("")}
+      <h3>Хувийн ур чадвар</h3>${chips(profile.personal)}`);
+  },
+  skills() {
+    wrap("ҮЛДЭГДЭЛ · УР ЧАДВАР", profile.skillGroups.map(([name, list]) => `
+      <h3>${name}</h3>
+      <div class="dots-line"><span>Нийт ур чадвар</span><b>${list.length}</b></div>
+      ${chips(list)}`).join(""));
+  },
+  history() {
+    wrap("ГҮЙЛГЭЭНИЙ ТҮҮХ · ТУРШЛАГА", profile.experience.map((e) => `
+      <div class="card-item">
+        <div class="row"><b>${e.title}</b><span>${e.when}</span></div>
+        <div class="small">${e.org}</div>
+        <ul>${e.points.map((p) => `<li>${p}</li>`).join("")}</ul>
+      </div>`).join(""));
+  },
+  projects() {
+    wrap("КАРТУУД · ТӨСЛҮҮД", projects.map((p) => {
+      const thumb = p.images.length
+        ? `<div class="thumb"><img src="${p.images[0]}" alt="${p.title}" /></div>`
+        : `<div class="thumb" style="background:linear-gradient(135deg,hsl(${p.hue} 60% 40%),hsl(${p.hue + 40} 60% 25%))">${p.title[0]}</div>`;
+      const links = p.links.length
+        ? p.links.map((l) => `<a class="btn" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join("")
+        : `<span class="btn off">Холбоос удахгүй</span>`;
+      return `<div class="card-item proj">${thumb}<b>${p.title}</b><p>${p.desc}</p>${chips(p.tech)}<div class="btns">${links}</div></div>`;
+    }).join(""));
+  },
+  contact() {
+    wrap("ШИЛЖҮҮЛЭГ · ХОЛБОО БАРИХ", `<p>Надтай холбогдохыг хүсвэл доорх сувгуудыг сонгоно уу.</p>` +
+      profile.contacts.map((c) => `
+      <a class="contact" href="${c.href}" target="_blank" rel="noopener">
+        <span class="ic">${ICONS[c.type] || "🔗"}</span>
+        <span><small>${c.label}</small><b>${c.value}</b></span>
+      </a>`).join(""));
+  },
+  site() {
+    wrap("САЙТЫН ТУХАЙ", `
+      <h3>Санаа</h3>
+      <p>Портфолиог банкны машин (ATM) хэлбэрээр хийсэн. Карт оруулж, PIN цохиод, хажуугийн товчоор цэс сонгоно. Хэсэг бүр банкны үйлчилгээтэй тохирно: ур чадвар = үлдэгдэл, туршлага = гүйлгээний түүх, төсөл = карт, холбоо барих = шилжүүлэг, CV = баримт.</p>
+      <h3>Технологи</h3>${chips(["JavaScript", "Vite", "CSS", "Vercel", "GitHub"])}
+      <h3>Тэмдэглэл</h3>
+      <p>Хийсвэр "ANUJIN BANK" нэр. Жинхэнэ банк, карт, PIN мэдээлэл ашиглаагүй.</p>`);
+  },
 };
 
-function setWp(cls) {
-  desktop.className = cls;
-  try { localStorage.setItem("wp", cls); } catch (e) {}
+// ===== Төлөв шилжүүлэх =====
+function go(name) {
+  if (name === "menu") { state = "menu"; renderMenu(); return; }
+  if (name === "eject") { eject(); return; }
+  if (name === "receipt") { printReceipt(); return; }
+  state = "page";
+  PAGES[name]();
+  screen.querySelector(".page-body").scrollTop = 0;
 }
-try {
-  const saved = localStorage.getItem("wp");
-  if (saved) desktop.className = saved;
-} catch (e) {}
 
-// Бүх товшилтыг нэг газраас барина
-document.addEventListener("click", (e) => {
-  const t = e.target.closest("[data-open]");
-  if (t) {
-    menu.hidden = true;
-    openApp(t.dataset.open);   // нэг товшилтоор нээнэ
+function insertCard() {
+  if (state !== "card") return;
+  cardBtn.classList.add("in");
+  pin = ""; msg = "";
+  setTimeout(() => { state = "pin"; renderPin(); }, 650);
+  state = "busy";
+}
+
+function eject() {
+  receipt.classList.remove("out");
+  cardBtn.classList.remove("in", "gone");
+  state = "card"; pin = ""; msg = ""; tries = 0;
+  renderCard();
+}
+
+function submitPin() {
+  if (pin.length < 4) { msg = "4 орон оруулна уу"; renderPin(); return; }
+  if (pin === PIN) { tries = 0; state = "menu"; renderMenu(); return; }
+  tries++; pin = "";
+  if (tries >= MAX_TRIES) {
+    state = "locked";
+    cardBtn.classList.remove("in"); cardBtn.classList.add("gone");
+    show(`<div class="center"><h1>🏧 КАРТ ЗАЛГИГДЛАА</h1><p class="role">Тоглосон юм аа 😄 Түр хүлээгээрэй, картыг чинь буцааж өгнө.</p></div>`);
+    setTimeout(eject, 3500);
     return;
   }
-  const wp = e.target.closest("[data-wp]");
-  if (wp) { setWp(wp.dataset.wp); return; }
+  msg = `Буруу PIN. Үлдсэн оролдлого: ${MAX_TRIES - tries}`;
+  renderPin();
+}
 
-  const rs = e.target.closest("[data-restore]");
-  if (rs) {
-    const [item] = trashItems.splice(+rs.dataset.restore, 1);  // жагсаалтаас хасна
-    trashMsg = `«${item.name}» сэргээгдлээ. Гэхдээ хэнд ч хэрэггүй байсан 😄`;
-    refreshTrash();
-    return;
-  }
-  if (e.target.closest("[data-egg]")) {
-    trashItems.length = 0;
-    trashMsg = "Хог цэвэрлэгдлээ.";
-    refreshTrash();
-    $("#bsod").hidden = false;   // нууц цэнхэр дэлгэц
-    return;
-  }
+function printReceipt() {
+  receipt.innerHTML = `ANUJIN BANK<br>${new Date().toLocaleDateString("mn-MN")}<br>-----------<br>${profile.name}<br>${profile.role.slice(0, 22)}…<br><a href="/CV.pdf" target="_blank" rel="noopener">CV.pdf татах</a>`;
+  receipt.classList.remove("out");
+  void receipt.offsetWidth;
+  receipt.classList.add("out");
+  state = "page";
+  wrap("БАРИМТ", `<p>Баримт хэвлэгдлээ. Доорх "баримт" нүхнээс авч, <b>CV.pdf татах</b> холбоос дээр дарна уу.</p>`);
+}
 
-  if (!e.target.closest("#startmenu")) menu.hidden = true;
+// ===== Үйлдлүүд =====
+function press(key) {
+  if (state !== "pin" || pin.length >= 4) return;
+  pin += key; msg = ""; renderPin();
+}
+
+function act(a) {
+  if (a === "ok") {
+    if (state === "card") insertCard();
+    else if (state === "pin") submitPin();
+  } else if (a === "fix") {
+    if (state === "pin") { pin = pin.slice(0, -1); msg = ""; renderPin(); }
+  } else if (a === "stop") {
+    if (state === "page") go("menu");
+    else if (state === "pin" || state === "menu") eject();
+  }
+}
+
+function side(slot) {
+  if (state === "menu") {
+    const m = MENU.find((x) => x.slot === slot);
+    if (m) go(m.go);
+  } else if (state === "page") {
+    if (slot === "L4") go("menu");
+    if (slot === "R4") eject();
+  }
+}
+
+// ===== Event холбоос =====
+cardBtn.addEventListener("click", insertCard);
+screen.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-go]");
+  if (el) go(el.dataset.go);
 });
-$("#bsod").onclick = () => { $("#bsod").hidden = true; };
+document.querySelectorAll("[data-key]").forEach((b) => b.addEventListener("click", () => press(b.dataset.key)));
+document.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", () => act(b.dataset.act)));
+document.querySelectorAll("[data-slot]").forEach((b) => b.addEventListener("click", () => side(b.dataset.slot)));
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") { $("#bsod").hidden = true; menu.hidden = true; }
+  if (/^[0-9]$/.test(e.key)) press(e.key);
+  else if (e.key === "Enter") act("ok");
+  else if (e.key === "Backspace") act("fix");
+  else if (e.key === "Escape") act("stop");
 });
 
-// ===== 4. ЦАГ БА ЭХЛЭХ =====
-function tick() {
-  $("#clock").textContent = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-}
-tick();
-setInterval(tick, 20000);
-
-setTimeout(() => {
-  $("#boot").classList.add("off");
-  setTimeout(() => $("#boot").remove(), 600); 
-}, 1200);
+renderCard();

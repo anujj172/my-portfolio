@@ -1,15 +1,15 @@
 export const profile = {
-  name: "Anujin Erdenebaatar",
+  name: "Анужин Эрдэнэбаатар",
   role: "Мэдээллийн системийн менежментийн оюутан",
   bio: "Мэдээллийн системийн менежментийн чиглэлээр суралцдаг. Системийн шинжилгээ, бизнес процессыг сайжруулах төсөл дээр ажилласан бөгөөд SQL, ERP систем, өгөгдлийн шинжилгээгээр туршлагатай.",
   skillGroups: [
-    ["Өгөгдөл ба систем", ["SQL", "MySQL", "PostgreSQL", "Excel", "Power BI", "ERP систем", "Системийн шинжилгээ", "Бизнес процессын шинжилгээ"]],
+    ["Өгөгдөл ба систем", ["SQL", "MySQL", "PostgreSQL", "Excel", "Power BI", "ERP систем", "Системийн шинжилгээ", "Бизнес процессын оновчлол"]],
     ["Хөгжүүлэлт ба дизайн", ["C#", "JavaScript", "React", "Figma"]],
     ["Менежмент", ["Agile", "Word", "Excel", "Outlook"]],
   ],
   personal: [
     "Багаар ажиллах", "Харилцаа", "Асуудал шийдэх", "Шийдвэр гаргах", "Цаг төлөвлөлт",
-    "Шинэ мэдлэг сурах", "Санаачлага", "Бүтээлч байдал", "Дарамтад ажиллах", "Манлайлал",
+    "Шинэ мэдлэг сурах", "Санаачлага", "Бүтээлч байдал", "Манлайлал",
   ],
   experience: [
     {
@@ -40,6 +40,8 @@ export const profile = {
   ],
 };
 
+// images: public/images/ доторх зургийн замууд. Хоосон бол өнгөт бүдүүвч харагдана.
+// links: [{ label, href }]. Хоосон бол "Холбоос удахгүй нэмэгдэнэ" гэж харагдана.
 export const projects = [
   {
     title: "Bouquet Studio",
@@ -49,25 +51,23 @@ export const projects = [
       { label: "GitHub", href: "https://github.com/anujj172/Bouquet-studio" },
       { label: "Figma", href: "https://www.figma.com/design/HBcqIymfWWKdVDFkBLgm7u/Flowershop?node-id=0-1" },
     ],
-    images: ["/images/bouquet-studio.png" , "/images/bouquet-studio 3.png", "/images/bouquet-studio 2.png"], 
+    images: ["/images/bouquet-studio.png", "/images/bouquet-studio 3.png", "/images/bouquet-studio 2.png"], // жишээ: ["/images/bouquet-1.png", "/images/bouquet-2.png"]
     hue: 340,
   },
   {
     title: "Санхүүгийн апп",
-    desc: "React дээр хийсэн гар утасны апп. Хэрэглэгчийн өдөр тутмын орлого, зарлагыг бүртгэж, үргүй зардлыг хянах замаар хуримтлал үүсгэх дадлыг төлөвшүүлэх санхүүгийн апп. Хэзээ ч, хаанаас ч хурдан, ойлгомжтой хөтлөх боломжийг олгож, иргэдийн санхүүгийн боловсролыг дэмжинэ.",
-    tech: ["React","Tailwind CSS", "Supabase"],
-    links: [
-      { label: "GitHub", href: "https://github.com/anujj172/finance-project" },
-    ],
+    desc: "Орлого, зарлагаа хаанаас ч хялбархан бүртгэж, үргүй зардлаа хянаж, хуримтлал үүсгэхэд тусалдаг санхүүгийн апп. Иргэдийн санхүүгийн боловсролыг дэмжих зорилготой.",
+    tech: ["Expo", "React Native", "TypeScript"],
+    links: [{ label: "GitHub", href: "https://github.com/anujj172/finance-project" }],
     images: ["/images/finance 1.png", "/images/finance 2.png"], 
     hue: 220,
   },
   {
-    title: "MyOS портфолио",
-    desc: "Энэ сайт. Цонх чирдэг, start цэстэй, ажилладаг хогийн савтай үйлдлийн систем загварын портфолио.",
+    title: "ATM портфолио",
+    desc: "Энэ сайт. Карт оруулж, PIN код цохиод, хажуугийн товчоор цэс сонгодог банкны машин загварын портфолио.",
     tech: ["JavaScript", "Vite", "CSS"],
     links: [{ label: "GitHub", href: "https://github.com/anujj172/my-portfolio" }],
-    images: ["/images/portfolio-1.png", "/images/portfolio-2.png"],
+    images: [],
     hue: 170,
   },
 ];

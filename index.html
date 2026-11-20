@@ -1,34 +1,64 @@
 <!doctype html>
 <html lang="mn">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anujin Erdenebaatar · Портфолио</title>
-</head>
-<body>
-  <div id="desktop" class="wp-teal">
-    <div id="icons"></div>
-    <div id="windows"></div>
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anujin Bank — Портфолио</title>
+  </head>
+  <body>
+    <main id="stage">
+      <div id="atm">
+        <header class="atm-top">
+          <span class="logo">ANUJIN ATM</span>
+          <span class="led"></span>
+        </header>
 
-  <div id="startmenu" hidden></div>
-  <div id="taskbar">
-    <button id="start">⊞ Эхлэх</button>
-    <div id="tasks"></div>
-    <span id="clock"></span>
-  </div>
+        <section class="screen-wrap">
+          <div class="sides" id="left">
+            <button class="side" data-slot="L1" aria-label="L1"></button>
+            <button class="side" data-slot="L2" aria-label="L2"></button>
+            <button class="side" data-slot="L3" aria-label="L3"></button>
+            <button class="side" data-slot="L4" aria-label="L4"></button>
+          </div>
+          <div class="screen" id="screen"></div>
+          <div class="sides" id="right">
+            <button class="side" data-slot="R1" aria-label="R1"></button>
+            <button class="side" data-slot="R2" aria-label="R2"></button>
+            <button class="side" data-slot="R3" aria-label="R3"></button>
+            <button class="side" data-slot="R4" aria-label="R4"></button>
+          </div>
+        </section>
 
-  <div id="boot">
-    <div>MyOS</div>
-    <div class="track"><div class="fill"></div></div>
-  </div>
-
-  <div id="bsod" hidden>
-    <div class="face">:(</div>
-    <p>Таны портфолио дээр алдаа гарлаа.<br />Алдааны код: HIRE_ME_NOW</p>
-    <p>Тоглосон юм! Хогийн савыг хоосолж болохгүй.<br />Дарж буцна уу.</p>
-  </div>
-
-  <script type="module" src="/src/main.js"></script>
-</body>
+        <section class="panel">
+          <div class="keys">
+            <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
+            <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
+            <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
+            <button disabled>*</button><button data-key="0">0</button><button disabled>#</button>
+          </div>
+          <div class="actions">
+            <button class="ok" data-act="ok">Тийм</button>
+            <button class="fix" data-act="fix">Засах</button>
+            <button class="stop" data-act="stop">Болих</button>
+          </div>
+          <div class="slots">
+            <div class="cardzone">
+              <div class="slot-bar"></div>
+              <button class="card" id="card" aria-label="Карт оруулах">
+                <span class="card-chip"></span>
+                <span class="card-name">ANUJIN</span>
+              </button>
+              <small>карт</small>
+            </div>
+            <div class="dispenser">
+              <div class="slot-bar"></div>
+              <div class="receipt" id="receipt"></div>
+              <small>баримт</small>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
