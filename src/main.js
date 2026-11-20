@@ -64,8 +64,8 @@ function renderMenu() {
   show(`<div class="menu">
     <div class="mid">
       <b>Сайн байна уу,</b>
-      <b>${profile.name.split(" ")[0]}-ын банканд</b>
-      <span class="small">Хажуугийн товч эсвэл дэлгэц дээрх бичгийг дар</span>
+      <b>${profile.name.split(" ")[0]}-ын банканд тавтай морилно уу!</b>
+      <span class="small">Хажуугийн товч эсвэл дэлгэц дээрх бичгийг дарна уу.</span>
     </div>
     ${MENU.map(cell).join("")}
   </div>`);
@@ -128,7 +128,7 @@ const PAGES = {
       <p>Портфолиог банкны машин (ATM) хэлбэрээр хийсэн. Карт оруулж, PIN цохиод, хажуугийн товчоор цэс сонгоно. Хэсэг бүр банкны үйлчилгээтэй тохирно: ур чадвар = үлдэгдэл, туршлага = гүйлгээний түүх, төсөл = карт, холбоо барих = шилжүүлэг, CV = баримт.</p>
       <h3>Технологи</h3>${chips(["JavaScript", "Vite", "CSS", "Vercel", "GitHub"])}
       <h3>Тэмдэглэл</h3>
-      <p>Хийсвэр "ANUJIN BANK" нэр. Жинхэнэ банк, карт, PIN мэдээлэл ашиглаагүй.</p>`);
+      <p>Хийсвэр "ANUJIN ATM" нэр. Жинхэнэ банк, карт, PIN мэдээлэл ашиглаагүй.</p>`);
   },
 };
 
@@ -164,7 +164,7 @@ function submitPin() {
   if (tries >= MAX_TRIES) {
     state = "locked";
     cardBtn.classList.remove("in"); cardBtn.classList.add("gone");
-    show(`<div class="center"><h1>🏧 КАРТ ЗАЛГИГДЛАА</h1><p class="role">Тоглосон юм аа 😄 Түр хүлээгээрэй, картыг чинь буцааж өгнө.</p></div>`);
+    show(`<div class="center"><h1>🏧 КАРТ ЗАЛГИГДЛАА</h1><p class="role">Тоглосон юм аа, Түр хүлээгээрэй, картыг чинь буцааж өгнө.</p></div>`);
     setTimeout(eject, 3500);
     return;
   }

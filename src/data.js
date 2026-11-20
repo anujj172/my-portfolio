@@ -67,7 +67,7 @@ export const projects = [
     desc: "Энэ сайт. Карт оруулж, PIN код цохиод, хажуугийн товчоор цэс сонгодог банкны машин загварын портфолио.",
     tech: ["JavaScript", "Vite", "CSS"],
     links: [{ label: "GitHub", href: "https://github.com/anujj172/my-portfolio" }],
-    images: [],
+    images: ["/images/portfolio.png"],
     hue: 170,
-  },
+  }
 ];
