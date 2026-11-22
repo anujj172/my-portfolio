@@ -32,7 +32,7 @@ export const profile = {
     { school: "Санхүү эдийн засгийн их сургууль", degree: "Мэдээллийн системийн менежментийн бакалавр", when: "2023 – 2027 (хүлээгдэж буй)" },
     { school: "48-р сургууль", degree: "Бүрэн дунд боловсрол", when: "2011 – 2023" },
   ],
-  // type нь main.js дахь contactIcons-той таарна: phone, email, github
+  
   contacts: [
     { type: "phone", label: "Утас", value: "+976 86886700", href: "tel:+97686886700" },
     { type: "email", label: "Имэйл", value: "anujinnerdenebaatar@gmail.com", href: "mailto:anujinnerdenebaatar@gmail.com" },
@@ -40,8 +40,6 @@ export const profile = {
   ],
 };
 
-// images: public/images/ доторх зургийн замууд. Хоосон бол өнгөт бүдүүвч харагдана.
-// links: [{ label, href }]. Хоосон бол "Холбоос удахгүй нэмэгдэнэ" гэж харагдана.
 export const projects = [
   {
     title: "Bouquet Studio",
