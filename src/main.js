@@ -50,7 +50,6 @@ function renderPin() {
     <b>PIN КОДОО ОРУУЛНА УУ</b>
     <div class="dots">${dots}</div>
     <p class="err">${msg}</p>
-    
     <p class="small">Тийм – батлах · Засах – арилгах · Болих – карт авах</p>
   </div>`);
 }
@@ -65,7 +64,6 @@ function renderMenu() {
     <div class="mid">
       <b>Сайн байна уу,</b>
       <b>${profile.name.split(" ")[0]}-ын ATM-д тавтай морилно уу!</b>
-      <span class="small">Хажуугийн товч эсвэл дэлгэц дээрх бичгийг дарна уу.</span>
     </div>
     ${MENU.map(cell).join("")}
   </div>`);
