@@ -64,7 +64,7 @@ function renderMenu() {
   show(`<div class="menu">
     <div class="mid">
       <b>Сайн байна уу,</b>
-      <b>${profile.name.split(" ")[0]}-ын банканд тавтай морилно уу!</b>
+      <b>${profile.name.split(" ")[0]}-ын ATM-д тавтай морилно уу!</b>
       <span class="small">Хажуугийн товч эсвэл дэлгэц дээрх бичгийг дарна уу.</span>
     </div>
     ${MENU.map(cell).join("")}
