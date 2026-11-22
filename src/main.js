@@ -50,7 +50,7 @@ function renderPin() {
     <b>PIN КОДОО ОРУУЛНА УУ</b>
     <div class="dots">${dots}</div>
     <p class="err">${msg}</p>
-    <p class="small">Зочдод зориулсан PIN: ${PIN}</p>
+    
     <p class="small">Тийм – батлах · Засах – арилгах · Болих – карт авах</p>
   </div>`);
 }
